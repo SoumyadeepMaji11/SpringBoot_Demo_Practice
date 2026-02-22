@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.Product;
 import com.example.demo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,9 @@ public class ProductService {
     }
 
     //read
+    @Cacheable("products")
     public List<Product> getAllProducts(){
+        System.out.println("Fetching all products from database");
         return productRepository.findAll();
     }
 

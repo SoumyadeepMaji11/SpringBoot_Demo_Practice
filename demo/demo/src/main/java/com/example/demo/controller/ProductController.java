@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Product;
 import com.example.demo.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @Autowired
     public ProductController(ProductService productService){
         this.productService = productService;
     }
@@ -33,7 +31,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/saveproduct")
     public ResponseEntity<?> saveProduct(@RequestBody List<Product> product){
-        List<Product> newProduct = productService.saveProduct(product);
+        productService.saveProduct(product);
         return ResponseEntity.ok("Products added successfully");
     }
 
@@ -62,9 +60,10 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully");
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getByPage")
-    public Page<Product> getByPage(@RequestParam Integer page, @RequestParam Integer size){
+    public Page<Product> getByPage(@RequestParam("pageNo") Integer page, @RequestParam("pageSize") Integer size){
         Pageable pageable = PageRequest.of(page,size);
         return productService.findAll(pageable);
     }

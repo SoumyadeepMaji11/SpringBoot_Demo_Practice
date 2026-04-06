@@ -29,7 +29,15 @@ public class SecurityConfig { // security configuration class
                 .csrf(csrf -> csrf.disable()) // disable CSRF protection
                 // authorize requests - define which endpoints are public and which require auth
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authenticate", "/register").permitAll() // allow unauthenticated access to auth endpoints
+                        .requestMatchers("/authenticate",
+                                "/register",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs",
+                                "/actuator/**",
+                                "/v3/api-docs/**").permitAll() // allow unauthenticated access to auth endpoints
                         .anyRequest().authenticated() // require authentication for any other request
                 )
                 // stateless session - do not create HTTP session for storing authentication

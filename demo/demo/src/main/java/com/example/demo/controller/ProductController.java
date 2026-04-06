@@ -5,6 +5,7 @@ import com.example.demo.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +30,24 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+//    @PostMapping("/saveproduct")
+//    public ResponseEntity<String> saveProduct(@RequestBody List<Product> product){
+//        productService.saveProduct(product);
+//        return ResponseEntity.status(HttpStatus.CREATED).body("Products added successfully");
+//    }
     @PostMapping("/saveproduct")
-    public ResponseEntity<?> saveProduct(@RequestBody List<Product> product){
-        productService.saveProduct(product);
-        return ResponseEntity.ok("Products added successfully");
+    public ResponseEntity<String> saveProduct(@RequestBody List<Product> products) {
+        try {
+            for (Product product : products) {
+                if (product.getName() == null || product.getName().trim().isEmpty()) {
+                    throw new RuntimeException("Product name cannot be null or empty");
+                }
+            }
+            productService.saveProduct(products);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Products added successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")

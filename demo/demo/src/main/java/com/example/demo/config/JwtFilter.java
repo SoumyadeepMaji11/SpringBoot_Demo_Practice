@@ -46,6 +46,16 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
+
+        String path = req.getServletPath();
+
+        // ✅ Skip Swagger & OpenAPI endpoints
+        if (path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs")) {
+            chain.doFilter(req, res);
+            return;
+        }
+
         // Read the Authorization header from the incoming request
         String header = req.getHeader("Authorization");
         String username = null;

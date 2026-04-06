@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Product;
 import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -9,14 +10,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class ProductController {
+
+    @Autowired
+    private WebClient webClient;
 
     private final ProductService productService;
 
@@ -82,4 +88,11 @@ public class ProductController {
         Pageable pageable = PageRequest.of(page,size);
         return productService.findAll(pageable);
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @GetMapping("/todos-external")
+    public List<Map<String, Object>> getTodos() {
+        return productService.getAllTodos();
+    }
+
 }

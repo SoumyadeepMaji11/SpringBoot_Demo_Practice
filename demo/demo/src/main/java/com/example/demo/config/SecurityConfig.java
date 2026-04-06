@@ -56,7 +56,6 @@ public class SecurityConfig { // security configuration class
     }
 
 
-
     // Password encoder bean
     @Bean // expose PasswordEncoder as a bean for encoding and matching passwords
     public PasswordEncoder passwordEncoder() { // create and return a BCryptPasswordEncoder
